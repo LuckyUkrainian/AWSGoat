@@ -27,6 +27,9 @@ resource "aws_lambda_function" "react_lambda_app" {
   runtime       = "nodejs18.x"
   role          = aws_iam_role.blog_app_lambda.arn
   depends_on    = [data.archive_file.lambda_zip, null_resource.file_replacement_lambda_react]
+  tags = {
+    yor_trace = "5bf48129-c293-491c-aea2-79ff48cc4577"
+  }
 }
 
 
@@ -50,6 +53,9 @@ resource "aws_iam_role" "blog_app_lambda" {
   ]
 }
 EOF
+  tags = {
+    yor_trace = "4ecaf060-8131-4223-bda6-a32566419de9"
+  }
 }
 
 
@@ -69,6 +75,9 @@ resource "aws_api_gateway_rest_api" "api" {
     types = [
       "REGIONAL"
     ]
+  }
+  tags = {
+    yor_trace = "969b31b5-8a7e-4d9e-83cd-663bce837a28"
   }
 }
 
@@ -161,6 +170,9 @@ resource "aws_api_gateway_stage" "api" {
   stage_name    = "prod"
   rest_api_id   = aws_api_gateway_rest_api.api.id
   deployment_id = aws_api_gateway_deployment.api.id
+  tags = {
+    yor_trace = "d1822c7e-016c-4ecf-8543-f7f74d4a98d9"
+  }
 }
 
 
@@ -176,6 +188,9 @@ resource "aws_api_gateway_rest_api" "apiLambda_ba" {
     types = [
       "REGIONAL"
     ]
+  }
+  tags = {
+    yor_trace = "e628f683-3581-41ac-93db-5c8897f58ef3"
   }
 }
 
@@ -3094,6 +3109,9 @@ resource "aws_lambda_function" "lambda_ba_data" {
       JWT_SECRET = "T2BYL6#]zc>Byuzu"
     }
   }
+  tags = {
+    yor_trace = "b5ce9223-140b-4169-9a70-db2a05e6519c"
+  }
 }
 
 
@@ -3117,6 +3135,9 @@ resource "aws_iam_role" "blog_app_lambda_python" {
   ]
 }
 EOF
+  tags = {
+    yor_trace = "eff88b85-f4f0-4850-b7a5-46c0df30544a"
+  }
 }
 
 
@@ -3156,6 +3177,9 @@ resource "aws_iam_policy" "lambda_data_policies" {
     ],
     "Version" : "2012-10-17"
   })
+  tags = {
+    yor_trace = "aa280012-0c7b-4419-9e88-06a7e20f1526"
+  }
 }
 
 
@@ -3197,6 +3221,7 @@ resource "aws_s3_bucket" "bucket_upload" {
   tags = {
     Name        = "Production bucket"
     Environment = "Prod"
+    yor_trace   = "da9e7a6e-412c-4f69-8e8e-db9f2c78fb6e"
   }
 }
 
@@ -3219,8 +3244,8 @@ resource "aws_s3_bucket_ownership_controls" "bucket_upload" {
 
 resource "aws_s3_bucket_acl" "bucket_upload" {
   depends_on = [
-	aws_s3_bucket_public_access_block.bucket_upload,
-	aws_s3_bucket_ownership_controls.bucket_upload,
+    aws_s3_bucket_public_access_block.bucket_upload,
+    aws_s3_bucket_ownership_controls.bucket_upload,
   ]
 
   bucket = aws_s3_bucket.bucket_upload.id
@@ -3231,7 +3256,7 @@ resource "aws_s3_bucket_policy" "allow_access_for_prod" {
   bucket = aws_s3_bucket.bucket_upload.id
   policy = data.aws_iam_policy_document.allow_get_access.json
 
-  depends_on = [ aws_s3_bucket_acl.bucket_upload ]
+  depends_on = [aws_s3_bucket_acl.bucket_upload]
 }
 data "aws_iam_policy_document" "allow_get_access" {
   statement {
@@ -3283,6 +3308,7 @@ resource "aws_s3_bucket" "dev" {
   tags = {
     Name        = "Development bucket"
     Environment = "Dev"
+    yor_trace   = "8016c709-01a4-4bc1-9fa3-42ed747d29dd"
   }
 }
 
@@ -3306,8 +3332,8 @@ resource "aws_s3_bucket_ownership_controls" "dev" {
 
 resource "aws_s3_bucket_acl" "dev" {
   depends_on = [
-	aws_s3_bucket_public_access_block.dev,
-	aws_s3_bucket_ownership_controls.dev,
+    aws_s3_bucket_public_access_block.dev,
+    aws_s3_bucket_ownership_controls.dev,
   ]
 
   bucket = aws_s3_bucket.dev.id
@@ -3318,7 +3344,7 @@ resource "aws_s3_bucket_policy" "allow_access_for_dev" {
   bucket = aws_s3_bucket.dev.bucket
   policy = data.aws_iam_policy_document.allow_get_list_access.json
 
-  depends_on = [ aws_s3_bucket_acl.dev ]
+  depends_on = [aws_s3_bucket_acl.dev]
 }
 data "aws_iam_policy_document" "allow_get_list_access" {
   statement {
@@ -3364,6 +3390,7 @@ resource "aws_s3_bucket" "bucket_temp" {
   tags = {
     Name        = "Temporary bucket"
     Environment = "Dev"
+    yor_trace   = "4a756eb3-7787-4733-a71c-39956ec42cf6"
   }
 }
 
@@ -3386,8 +3413,8 @@ resource "aws_s3_bucket_ownership_controls" "bucket_temp" {
 
 resource "aws_s3_bucket_acl" "bucket_temp" {
   depends_on = [
-	aws_s3_bucket_public_access_block.bucket_temp,
-	aws_s3_bucket_ownership_controls.bucket_temp,
+    aws_s3_bucket_public_access_block.bucket_temp,
+    aws_s3_bucket_ownership_controls.bucket_temp,
   ]
 
   bucket = aws_s3_bucket.bucket_temp.id
@@ -3422,6 +3449,7 @@ resource "aws_s3_bucket" "bucket_tf_files" {
   tags = {
     Name        = "Do not delete Bucket"
     Environment = "Dev"
+    yor_trace   = "4305db75-5cfe-42c8-bcb3-452b8f4a3fe6"
   }
 }
 
@@ -3433,13 +3461,15 @@ resource "aws_vpc" "goat_vpc" {
   instance_tenancy     = "default"
   enable_dns_hostnames = true
   tags = {
-    Name = "AWS_GOAT_VPC"
+    Name      = "AWS_GOAT_VPC"
+    yor_trace = "7cfbfb4b-75e2-4f4f-b20c-c8ccb208afa0"
   }
 }
 resource "aws_internet_gateway" "goat_gw" {
   vpc_id = aws_vpc.goat_vpc.id
   tags = {
-    Name = "app gateway"
+    Name      = "app gateway"
+    yor_trace = "8686cd49-d43b-4f58-8c0f-8906e74bb403"
   }
 }
 resource "aws_subnet" "goat_subnet" {
@@ -3448,7 +3478,8 @@ resource "aws_subnet" "goat_subnet" {
   availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true
   tags = {
-    Name = "AWS_GOAT App subnet"
+    Name      = "AWS_GOAT App subnet"
+    yor_trace = "336fada4-46c7-4dbd-8a26-ebf301e60fc7"
   }
 }
 
@@ -3457,6 +3488,9 @@ resource "aws_route_table" "goat_rt" {
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.goat_gw.id
+  }
+  tags = {
+    yor_trace = "bdc5a394-b033-4fe6-9884-eac3cf98f07a"
   }
 }
 resource "aws_route_table_association" "goat_public_rta" {
@@ -3482,7 +3516,8 @@ resource "aws_security_group" "goat_sg" {
   }
 
   tags = {
-    Name = "AWS_GOAT_sg"
+    Name      = "AWS_GOAT_sg"
+    yor_trace = "85fed389-2251-4c6c-9aa7-cb7dec3da7e7"
   }
 }
 
@@ -3491,6 +3526,9 @@ resource "aws_security_group" "goat_sg" {
 resource "aws_iam_instance_profile" "goat_iam_profile" {
   name = "AWS_GOAT_ec2_profile"
   role = aws_iam_role.goat_role.name
+  tags = {
+    yor_trace = "d021f463-66a2-4470-8e46-72098f558585"
+  }
 }
 resource "aws_iam_role" "goat_role" {
   name               = "AWS_GOAT_ROLE"
@@ -3510,6 +3548,9 @@ resource "aws_iam_role" "goat_role" {
     ]
 }
 EOF
+  tags = {
+    yor_trace = "df603848-84a6-4a2b-ad4f-df9c1e8f25d2"
+  }
 }
 resource "aws_iam_role_policy_attachment" "goat_s3_policy" {
   role       = aws_iam_role.goat_role.name
@@ -3572,6 +3613,9 @@ resource "aws_iam_policy" "goat_inline_policy_2" {
     ],
     "Version" : "2012-10-17"
   })
+  tags = {
+    yor_trace = "1d94d7fe-dca9-41a2-a6f9-e3feb3c0e5f4"
+  }
 }
 
 data "template_file" "goat_script" {
@@ -3603,7 +3647,8 @@ resource "aws_instance" "goat_instance" {
   subnet_id            = aws_subnet.goat_subnet.id
   security_groups      = [aws_security_group.goat_sg.id]
   tags = {
-    Name = "AWS_GOAT_DEV_INSTANCE"
+    Name      = "AWS_GOAT_DEV_INSTANCE"
+    yor_trace = "bb5a5aeb-ac91-416e-94f3-73c0eee8891f"
   }
   user_data = data.template_file.goat_script.rendered
   depends_on = [
@@ -3623,6 +3668,9 @@ resource "aws_dynamodb_table" "users_table" {
     name = "email"
     type = "S"
   }
+  tags = {
+    yor_trace = "54e40af3-25c8-4158-9610-fb6d97840809"
+  }
 }
 resource "aws_dynamodb_table" "posts_table" {
   name           = "blog-posts"
@@ -3634,6 +3682,9 @@ resource "aws_dynamodb_table" "posts_table" {
   attribute {
     name = "id"
     type = "S"
+  }
+  tags = {
+    yor_trace = "d95b7793-587f-4d9a-abf6-17ce5ae5829a"
   }
 }
 
